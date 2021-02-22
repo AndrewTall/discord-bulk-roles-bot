@@ -26,23 +26,25 @@ else:
         raise RuntimeError('Invalid <ADMIN_CHANNEL_ID> environment variable: should be number')
 
 
-def is_correct_channel(ctx: commands.Context):
+def is_correct_channel(ctx: commands.Context) -> bool:
     return ctx.channel.id == channel_id
 
 
-async def check_permissions(ctx: commands.Context):
+async def check_permissions(ctx: commands.Context) -> bool:
     if not ctx.message.channel.guild.me.guild_permissions.manage_roles:
         await ctx.message.reply('Sorry, it seems that I have no permissions to manage roles!')
-        raise commands.errors.CommandInvokeError('no <manage_roles> permission')
+        return False
+    return True
 
 
-async def check_arguments(ctx: commands.Context, role: discord.Role, members: commands.Greedy[discord.Member]):
+async def check_arguments(ctx: commands.Context, role: discord.Role, members: commands.Greedy[discord.Member]) -> bool:
     if role is None:
         await ctx.message.reply('Please specify role')
-        raise commands.errors.CommandInvokeError('no <role> argument')
+        return False
     elif members is None:
         await ctx.message.reply('Please specify members')
-        raise commands.errors.CommandInvokeError('no <members> argument')
+        return False
+    return True
 
 
 client = commands.Bot(command_prefix=full_prefix)
@@ -62,9 +64,9 @@ async def on_command_error(ctx: commands.Context, error: str):
 
 @commands.check(is_correct_channel)
 @client.command(brief='Add role to each member in list')
-async def add(ctx: commands.Context, role: discord.Role=None, members: commands.Greedy[discord.Member]=None):
-    await check_arguments(ctx, role, members)
-    await check_permissions(ctx)
+async def add(ctx: commands.Context, role: discord.Role = None, members: commands.Greedy[discord.Member] = None):
+    if not await check_arguments(ctx, role, members) or not await check_permissions(ctx):
+        return
     async with ctx.typing():
         members_with_role = []
         for member in members:
@@ -82,8 +84,8 @@ async def add(ctx: commands.Context, role: discord.Role=None, members: commands.
 @commands.check(is_correct_channel)
 @client.command(brief='Remove role from each member in list')
 async def remove(ctx: commands.Context, role: discord.Role, members: commands.Greedy[discord.Member]):
-    await check_arguments(ctx, role, members)
-    await check_permissions(ctx)
+    if not await check_arguments(ctx, role, members) or not await check_permissions(ctx):
+        return
     async with ctx.typing():
         members_without_role = []
         for member in members:
