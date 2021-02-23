@@ -8,8 +8,7 @@ import os
 token = os.getenv('BOT_TOKEN')
 prefix = os.getenv('BOT_PREFIX')
 if not prefix:
-    prefix = '!'
-full_prefix = '{}bulkroles '.format(prefix)
+    prefix = '!bulkroles'
 channel_id = os.getenv('ADMIN_CHANNEL_ID')
 
 
@@ -47,12 +46,12 @@ async def check_arguments(ctx: commands.Context, role: discord.Role, members: co
     return True
 
 
-client = commands.Bot(command_prefix=full_prefix)
+client = commands.Bot(command_prefix=commands.when_mentioned_or(prefix))
 
 
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.idle, activity=discord.Game('Listening to {}help'.format(full_prefix)))
+    await client.change_presence(status=discord.Status.idle, activity=discord.Game('Listening to {}help'.format(prefix)))
     print('I am online')
 
 
