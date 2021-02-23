@@ -51,7 +51,7 @@ client = commands.Bot(command_prefix=commands.when_mentioned_or(prefix))
 
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.idle, activity=discord.Game('Listening to {}help'.format(prefix)))
+    await client.change_presence(status=discord.Status.idle)
     print('I am online')
 
 
