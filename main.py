@@ -8,7 +8,7 @@ import os
 token = os.getenv('BOT_TOKEN')
 prefix = os.getenv('BOT_PREFIX')
 if not prefix:
-    prefix = '!bulkroles'
+    prefix = '!bulkroles '
 channel_id = os.getenv('ADMIN_CHANNEL_ID')
 
 
