@@ -57,8 +57,9 @@ async def on_ready():
 
 
 @client.event
-async def on_command_error(ctx: commands.Context, error: str):
-    await ctx.message.reply('Unknown error!\nPlease check my role is above any user roles in server settings.\nOtherwise contact developer.')
+async def on_command_error(ctx: commands.Context, error):
+    if not isinstance(error, discord.ext.commands.errors.CommandNotFound):
+        await ctx.message.reply('Unknown error!\nPlease check my role is above any user roles in server settings.\nOtherwise contact developer.')
     print(error)
 
 
